@@ -3,7 +3,7 @@ package repository
 import (
 	"errors"
 
-	date_source "go-training-crud/data_source"
+	"go-training-crud/data_source"
 	"go-training-crud/internal/domain"
 )
 
@@ -18,13 +18,13 @@ type UserRepository interface {
 }
 
 type UserRepositoryImpl struct {
-	userDataSource date_source.UserDataSource
+	userDataSource data_source.UserDataSource
 }
 
 func (ur *UserRepositoryImpl) CreateUser(u domain.User) error {
 	userModel := FromDomainMapper(u)
 
-	err := ur.userDataSource.Insert(date_source.UserDataInput(userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber))
+	err := ur.userDataSource.Insert(data_source.UserDataInput(userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber))
 	if err != nil {
 		return errors.Join(errors.New("error creating user"), err)
 	}
@@ -36,7 +36,7 @@ func (ur *UserRepositoryImpl) FindAll() []domain.User {
 	var userSlice []domain.User
 	for _, u := range ur.userDataSource.SelectAll() {
 		var userModel UserModel
-		userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber = date_source.UserDataOutput(u)
+		userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber = data_source.UserDataOutput(u)
 		userSlice = append(userSlice, ToDomainMapper(userModel))
 	}
 
@@ -50,7 +50,7 @@ func (ur *UserRepositoryImpl) FindByID(id domain.ID) (domain.User, error) {
 		return domain.User{}, errors.New("user not found")
 	}
 
-	userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber = date_source.UserDataOutput(u)
+	userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber = data_source.UserDataOutput(u)
 	return ToDomainMapper(userModel), nil
 }
 
@@ -66,7 +66,7 @@ func (ur *UserRepositoryImpl) DeleteUser(id domain.ID) error {
 func (ur *UserRepositoryImpl) UpdateUser(u domain.User) error {
 	userModel := FromDomainMapper(u)
 
-	err := ur.userDataSource.Update(date_source.UserDataInput(userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber))
+	err := ur.userDataSource.Update(data_source.UserDataInput(userModel.ID, userModel.Name, userModel.Age, userModel.DocNumber))
 	if err != nil {
 		return errors.Join(errors.New("error updating user"), err)
 	}
@@ -74,7 +74,7 @@ func (ur *UserRepositoryImpl) UpdateUser(u domain.User) error {
 	return nil
 }
 
-func NewUserRepository(userDataSource date_source.UserDataSource) UserRepository {
+func NewUserRepository(userDataSource data_source.UserDataSource) UserRepository {
 	return &UserRepositoryImpl{
 		userDataSource: userDataSource,
 	}
