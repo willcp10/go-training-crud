@@ -1,4 +1,4 @@
-package date_source
+package data_source
 
 import (
 	"errors"

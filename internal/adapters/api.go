@@ -11,7 +11,7 @@ import (
 
 func BuildApp() error {
 	// Data Source
-	userDataSource := date_source.NewUserDataSource()
+	userDataSource := data_source.NewUserDataSource()
 
 	// Repository
 	userRepository := repository.NewUserRepository(userDataSource)
